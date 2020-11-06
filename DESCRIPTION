@@ -1,0 +1,11 @@
+Package: simplexdat
+Type: Package
+Title: Functions to generate and manipulate data on the simplex
+Version: 0.1.0
+Author: Ty Stanford
+Maintainer: Ty Stanford <tystan@gmail.com>
+Description: Functions to generate and manipulate data on the simplex.
+    Use four spaces when indenting paragraphs within the Description.
+License: GPL-2
+Encoding: UTF-8
+LazyData: true
