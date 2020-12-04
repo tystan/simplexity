@@ -4,3 +4,4 @@
 fig
 
 ^\.Rhistory$
+^R/simplexgen\.R$
