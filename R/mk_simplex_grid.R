@@ -6,36 +6,47 @@
 #' @description Create a grid on a m-dim simplex, enumerating all points spaced by \code{step_size}
 #' @param dim the dimension of the simplex. This will be the number of columns in the returned data
 #' @param step_size (default 0.1) the increments in each of the compositions/axes to be enumerated
+#' @param nc (default \code{detectCores() - 1}) the number of cores to use. The default uses 1 less than the cores detected by R. \code{nc = 1} will be quickest for small \code{dim} (say, \code{dim} < 6) but multicore performance is far superior for \code{dim} larger (or smaller \code{step_size}).
 #' @export
 #' @details
-#' returns a matrix with \code{dim} columns and n rows that is increasingly large for increasing \code{dim}.
-#' Below is a table of the row numbers for a \code{step_size} of 0.1 (default) and \code{dim} dimensions
+#' Returns a matrix with \code{dim} columns and n rows that is increasingly large for increasing \code{dim}.
+#' Below is a table of the row numbers and time taken (in sec) to run \code{mk_simplex_grid()} using 1- and 5-cores (6-core Intel i5-8400) for a \code{step_size} of 0.1 (default) and \code{dim} dimensions
 #'
-#' \tabular{rrrr}{
-#'   \code{dim} \tab \code{step_size} \tab n rows \tab time taken to run (sec) on i5-8400 \cr
-#'   2 \tab 0.1 \tab 11 \tab 0.004 \cr
-#'   3 \tab 0.1 \tab 66 \tab 0.039  \cr
-#'   4 \tab 0.1 \tab 286 \tab 0.248  \cr
-#'   5 \tab 0.1 \tab 1001 \tab 1.131  \cr
-#'   6 \tab 0.1 \tab 3003 \tab 4.168  \cr
-#'   7 \tab 0.1 \tab 8008 \tab 13.549  \cr
-#'   8 \tab 0.1 \tab 19448 \tab  38.434 \cr
-#'   9 \tab 0.1 \tab 43758 \tab 97.613
+#' \tabular{rrrrr}{
+#'   \code{dim} \tab \code{step_size} \tab n rows \tab time (sec), \code{nc=1} \tab time (sec), \code{nc=5} \cr
+#'   2 \tab 0.1 \tab 11 \tab 0.004 \tab 1.366 \cr
+#'   3 \tab 0.1 \tab 66 \tab 0.039 \tab 1.473 \cr
+#'   4 \tab 0.1 \tab 286 \tab 0.248 \tab 1.487 \cr
+#'   5 \tab 0.1 \tab 1001 \tab 1.131 \tab 1.709 \cr
+#'   6 \tab 0.1 \tab 3003 \tab 4.168 \tab 2.668 \cr
+#'   7 \tab 0.1 \tab 8008 \tab 13.549 \tab 5.958 \cr
+#'   8 \tab 0.1 \tab 19448 \tab 38.434 \tab 15.077 \cr
+#'   9 \tab 0.1 \tab 43758 \tab 97.613 \tab 40.358 \cr
+#'   10 \tab 0.1 \tab 92378 \tab 217.436 \tab 100.434
 #' }
 #'
 #'
 #' @examples
-#' mk_simplex_grid(2)
+#' mk_simplex_grid(2, nc = 1)
 #' mk_simplex_grid(2, 0.05)
 #' nrow(mk_simplex_grid(2))
-#' system.time(mk_simplex_grid(2))
+#' system.time(mk_simplex_grid(2, nc = 1))
 #'
 #' mk_simplex_grid(5, 0.5)
 
 
-mk_simplex_grid <- function(dim, step_size = 0.1) {
+mk_simplex_grid <- function(dim, step_size = 0.1, nc = detectCores() - 1) {
 
-  .mk_var(dim - 1, 1, step_size)
+  if (nc < 2) {
+    return(.mk_var(dim - 1, 1, step_size))
+  } else {
+    # Create clusters
+    cl <- makeCluster(nc)
+    registerDoParallel(cl)
+    par_df <- .mk_var_par(dim - 1, 1, step_size)
+    stopCluster(cl)
+    return(par_df)
+  }
 
 }
 
@@ -69,3 +80,31 @@ mk_simplex_grid <- function(dim, step_size = 0.1) {
 }
 
 
+
+.mk_var_par <- function(remain_var, remain_comp, step_size) {
+
+  if (remain_var < 1) {
+
+    return(remain_comp)
+
+  } else {
+
+    this_var <- seq(0, remain_comp, by = step_size)
+
+    return(
+      foreach(i = seq_along(this_var), .combine = rbind) %dopar% {
+
+        cbind(
+          this_var[i],
+          .mk_var(
+            remain_var - 1,
+            max(0, remain_comp - this_var[i]),
+            step_size
+          )
+        )
+
+      }
+    )
+
+  }
+}

@@ -38,8 +38,8 @@ If \code{TRUE} is returned it just means no counter examples have been found
 example_fun_1 <- function(x) {
  -sum(log(x))
 }
-# 1-D check, takes ~10 sec (to reduce time use n_rep = 1e4 or similar)
-is_convex_over_simplex(example_fun_1, 1, n_rep = 1e4, seed_ = 1234)
+# 2-D check, takes ~10 sec (to reduce time use n_rep = 1e4 or similar)
+is_convex_over_simplex(example_fun_1, 2, n_rep = 1e4, seed_ = 1234)
 # 4-D check
 is_convex_over_simplex(example_fun_1, 4, n_rep = 1e3, seed_ = 1234)
 }
