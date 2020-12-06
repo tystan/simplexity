@@ -3,9 +3,7 @@
 ## Installation
 
 ```r
-install.packages(
-  c("gMOIP", "geometry", "compositions", "foreach", "ggplot2", "GGally", "dplyr", "purrr")
-) # required for simplexdat package
+# see DESCRIPTION file for required packages
 
 library(devtools) # see https://www.r-project.org/nosvn/pandoc/devtools.html
 devtools::install_github('tystan/simplexdat')
