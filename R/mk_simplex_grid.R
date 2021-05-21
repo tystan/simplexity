@@ -7,6 +7,7 @@
 #' @param dim the dimension of the simplex. This will be the number of columns in the returned data
 #' @param step_size (default 0.1) the increments in each of the compositions/axes to be enumerated
 #' @param nc (default \code{detectCores() - 1}) the number of cores to use. The default uses 1 less than the cores detected by R. \code{nc = 1} will be quickest for small \code{dim} (say, \code{dim} < 6) but multicore performance is far superior for \code{dim} larger (or smaller \code{step_size}).
+#' @param rm_edges (default \code{FALSE}) should points in the grid that lie on the edge of the simplex be removed (i.e., points that contain 0 or 1 values)? 
 #' @export
 #' @details
 #' Returns a matrix with \code{dim} columns and n rows that is increasingly large for increasing \code{dim}.
@@ -29,24 +30,32 @@
 #' @examples
 #' mk_simplex_grid(2, nc = 1)
 #' mk_simplex_grid(2, 0.05)
+#' mk_simplex_grid(3, 0.2, rm_edges = FALSE)
+#' mk_simplex_grid(3, 0.2, rm_edges = TRUE)
 #' nrow(mk_simplex_grid(2))
 #' system.time(mk_simplex_grid(2, nc = 1))
 #'
 #' mk_simplex_grid(5, 0.5)
 
 
-mk_simplex_grid <- function(dim, step_size = 0.1, nc = detectCores() - 1) {
+mk_simplex_grid <- function(dim, step_size = 0.1, nc = detectCores() - 1, rm_edges = FALSE) {
 
+  grid_df <- NULL
   if (nc < 2) {
-    return(.mk_var(dim - 1, 1, step_size))
+    grid_df <- .mk_var(dim - 1, 1, step_size)
   } else {
     # Create clusters
     cl <- makeCluster(nc)
     registerDoParallel(cl)
-    par_df <- .mk_var_par(dim - 1, 1, step_size)
+    grid_df <- .mk_var_par(dim - 1, 1, step_size)
     stopCluster(cl)
-    return(par_df)
   }
+  
+  if (rm_edges) {
+    grid_df <- grid_df[!(rowSums(grid_df == 0 | grid_df == 1) > 0), ]
+  }
+  
+  return(grid_df)
 
 }
 
