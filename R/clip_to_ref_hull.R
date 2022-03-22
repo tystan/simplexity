@@ -33,31 +33,33 @@
 #' # ref_dat
 #' # real data to imitate
 #' library(dplyr)
-#' library(compositions)
-#' data("fairclough", package = "deltacomp")
+#' data("fairclough", package = "deltacomp") # see github.com/tystan/deltacomp
 #' fc3 <-
 #'   fairclough %>%
 #'   mutate(pa = lpa + mpa + vpa) %>%
 #'   select(sed, pa, sleep)
 #' summary(fc3)
-#' fc3_ref <- ilr(acomp(fc3))
+#' fc3_ref <- simplex_to_ilr(as.matrix(fc3))
 #' plot(fc3)
 #' plot(fc3_ref)
 #' # make compositions grid loosely based on summary(fc3)
-# mygrid <- rbind(
-#   expand.grid(
-#     c1 = seq(300, 700, 10),
-#     c2 = seq(200, 500, 10),
-#     c3 = seq(400, 650, 10)
-#   )
-# )
-# mg <- subset(mygrid, rowSums(mygrid) == 1440) # 1440 min in a day
-# mg_ilrs <- ilr(acomp(mg))
-#
-# remaing_rows <-
-#   clip_to_ref_hull(data = mg_ilrs, ref_data = unclass(fc3_ref))
-#
-# as.matrix(fc3_ref)
+#' # 10 min intervals
+#' mygrid <- mk_simplex_grid(3, 10 / 1440, rm_edges = TRUE) * 1440 
+#' colnames(mygrid) <- c("sed", "pa", "sleep")
+#' mygrid <- as_tibble(mygrid)
+#' head(mygrid)
+#' kp_i <- 
+#'   with(mygrid, as.logical(
+#'     (  sed >= 300 &   sed <= 700) &
+#'     (   pa >= 200 &    pa <= 500) &
+#'     (sleep >= 400 & sleep <= 650) 
+#'   ))
+#' mygrid <- mygrid[kp_i, ]
+#' mg_ilrs <- simplex_to_ilr(as.matrix(mg))
+#' head(mg_ilrs)
+#' remaining_rows <-clip_to_ref_hull(data = mg_ilrs, ref_data = fc3_ref)
+
+
 
 clip_to_ref_hull <- function(data, ref_data, print_all = TRUE) {
 
@@ -74,9 +76,11 @@ clip_to_ref_hull <- function(data, ref_data, print_all = TRUE) {
 
   # indexes of n-dim hull
   ch_rd <- geometry::convhulln(rd)
-
+  ch_rd <- foreach(i = 1:ncol(ch_rd), .combine = c) %do% {c(ch_rd[, i])}
+  ch_rd <- sort(unique(ch_rd))
+    
   # convex hull vertices
-  ch_v <- rd[ch_rd]
+  ch_v <- rd[ch_rd, ]
   # limit to distinct points
   ch_v <- as.data.frame(ch_v) %>% distinct() %>% as.matrix()
 

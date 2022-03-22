@@ -1,5 +1,4 @@
 exportPattern("^[[:alpha:]]+")
-import("compositions")
 import("ggplot2")
 import("geometry")
 import("gMOIP")

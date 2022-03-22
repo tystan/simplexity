@@ -14,13 +14,13 @@
 #' \code{V \%*\% t(V) =} \eqn{I_{D} - \frac{1}{D} \times 1_{DxD}}
 #' 
 #' @examples 
-#' create_vt(4)
-#' (VT <- create_vt(3))
+#' mk_vt(4)
+#' (VT <- mk_vt(3))
 #' VT %*% t(VT) 
 #' t(VT) %*% VT  
 
 
-create_vt <- function(n_comp, normalise = TRUE) {
+mk_vt <- function(n_comp, normalise = TRUE) {
   
   base_zeros <- rep(0, n_comp)
   
