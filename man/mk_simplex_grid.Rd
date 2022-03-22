@@ -4,7 +4,7 @@
 \alias{mk_simplex_grid}
 \title{Create a grid on a m-dim simplex}
 \usage{
-mk_simplex_grid(dim, step_size = 0.1, nc = detectCores() - 1)
+mk_simplex_grid(dim, step_size = 0.1, nc = detectCores() - 1, rm_edges = FALSE)
 }
 \arguments{
 \item{dim}{the dimension of the simplex. This will be the number of columns in the returned data}
@@ -12,6 +12,8 @@ mk_simplex_grid(dim, step_size = 0.1, nc = detectCores() - 1)
 \item{step_size}{(default 0.1) the increments in each of the compositions/axes to be enumerated}
 
 \item{nc}{(default \code{detectCores() - 1}) the number of cores to use. The default uses 1 less than the cores detected by R. \code{nc = 1} will be quickest for small \code{dim} (say, \code{dim} < 6) but multicore performance is far superior for \code{dim} larger (or smaller \code{step_size}).}
+
+\item{rm_edges}{(default \code{FALSE}) should points in the grid that lie on the edge of the simplex be removed (i.e., points that contain 0 or 1 values)?}
 }
 \description{
 Create a grid on a m-dim simplex, enumerating all points spaced by \code{step_size}
@@ -36,6 +38,8 @@ Below is a table of the row numbers and time taken (in sec) to run \code{mk_simp
 \examples{
 mk_simplex_grid(2, nc = 1)
 mk_simplex_grid(2, 0.05)
+mk_simplex_grid(3, 0.2, rm_edges = FALSE)
+mk_simplex_grid(3, 0.2, rm_edges = TRUE)
 nrow(mk_simplex_grid(2))
 system.time(mk_simplex_grid(2, nc = 1))
 

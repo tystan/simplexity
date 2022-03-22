@@ -11,7 +11,7 @@
 #' entered as names. e.g., \code{add_alpha("black", 0.5)} returns \code{"#00000080"}
 #'
 #' @examples
-#' add_alpha(c("black", red", yellow", blue"), 0.5)
+#' add_alpha(c("black", "red", "yellow", "blue"), 0.5)
 #'
 #'
 add_alpha <- function(col, alpha = 1) {
