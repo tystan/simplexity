@@ -36,14 +36,20 @@ Below is a table of the row numbers and time taken (in sec) to run \code{mk_simp
 }
 }
 \examples{
+### to pass package checks, 1 core only used for these below examples
 mk_simplex_grid(2, nc = 1)
-mk_simplex_grid(2, 0.05)
-mk_simplex_grid(3, 0.2, rm_edges = FALSE)
-mk_simplex_grid(3, 0.2, rm_edges = TRUE)
-nrow(mk_simplex_grid(2))
+mk_simplex_grid(2, 0.05, nc = 1)
+mk_simplex_grid(3, 0.2, rm_edges = FALSE, nc = 1)
+mk_simplex_grid(3, 0.2, rm_edges = TRUE, nc = 1)
+mk_simplex_grid(5, 0.5, nc = 1)
+nrow(mk_simplex_grid(2, nc = 1))
 system.time(mk_simplex_grid(2, nc = 1))
 
-mk_simplex_grid(5, 0.5)
+### on multi-core systems, can try these examples to use n-1 cores:
+# mk_simplex_grid(2, 0.05)
+# mk_simplex_grid(3, 0.2, rm_edges = FALSE)
+# mk_simplex_grid(3, 0.2, rm_edges = TRUE)
+# mk_simplex_grid(5, 0.5)
 }
 \author{
 Ty Stanford <tystan@gmail.com>

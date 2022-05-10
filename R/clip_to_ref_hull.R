@@ -1,4 +1,4 @@
-
+globalVariables(c("i", "."))
 
 #' Limit `data` to points contained within the m-dim convex hull of a reference set of data
 #'
@@ -12,6 +12,7 @@
 #'    in \code{data} that have been removed from the returned dataset.
 #'    \code{FALSE} only prints the remaining data points in \code{data} and the data
 #'    points in \code{data_ref}.
+#' @param point_size point size in GGally:ggparis() plot (default \code{2} to enlarge points as output is multifaceted)
 #' @export
 #' @details
 #' \code{clip_to_ref_hull()} removes points from n1 x m \code{data} (n1 obs, m variables) that lie outside the
@@ -30,9 +31,8 @@
 #' }
 #'
 #' @examples
-#' # ref_dat
-#' # real data to imitate
 #' library(dplyr)
+#' # real data to imitate
 #' data("fairclough", package = "deltacomp") # see github.com/tystan/deltacomp
 #' fc3 <-
 #'   fairclough %>%
@@ -44,7 +44,7 @@
 #' plot(fc3_ref)
 #' # make compositions grid loosely based on summary(fc3)
 #' # 10 min intervals
-#' mygrid <- mk_simplex_grid(3, 10 / 1440, rm_edges = TRUE) * 1440 
+#' mygrid <- mk_simplex_grid(3, 10 / 1440, rm_edges = TRUE, nc = 1) * 1440 
 #' colnames(mygrid) <- c("sed", "pa", "sleep")
 #' mygrid <- as_tibble(mygrid)
 #' head(mygrid)
@@ -55,13 +55,13 @@
 #'     (sleep >= 400 & sleep <= 650) 
 #'   ))
 #' mygrid <- mygrid[kp_i, ]
-#' mg_ilrs <- simplex_to_ilr(as.matrix(mg))
+#' mg_ilrs <- simplex_to_ilr(as.matrix(mygrid))
 #' head(mg_ilrs)
-#' remaining_rows <-clip_to_ref_hull(data = mg_ilrs, ref_data = fc3_ref)
+#' remaining_rows <- clip_to_ref_hull(data = mg_ilrs, ref_data = fc3_ref)
 
 
 
-clip_to_ref_hull <- function(data, ref_data, print_all = TRUE) {
+clip_to_ref_hull <- function(data, ref_data, print_all = TRUE, point_size = 2) {
 
   data <- as.matrix(data)
   rd <- as.matrix(ref_data)
@@ -111,12 +111,15 @@ clip_to_ref_hull <- function(data, ref_data, print_all = TRUE) {
       as.data.frame(rd),
       as.data.frame(distinct_points)
     ) %>%
-      ggpairs(
-        .,
-        upper = list(continuous = wrap("points", size = 0.1, colour = in_or_out_cols)),
-        diag = list(continuous ="blankDiag"),
-        lower = list(continuous = wrap("points", size = 0.1, colour = in_or_out_cols))
-      ) %>%
+      {
+        ggpairs(
+          .,
+          upper = list(continuous = wrap("points", size = point_size, colour = in_or_out_cols)),
+          diag = list(continuous ="blankDiag"),
+          lower = list(continuous = wrap("points", size = point_size, colour = in_or_out_cols))
+        ) + 
+        theme_bw()
+      } %>%
       print(.)
 
   } else {
@@ -127,12 +130,15 @@ clip_to_ref_hull <- function(data, ref_data, print_all = TRUE) {
       as.data.frame(rd),
       as.data.frame(distinct_points[in_or_out == 1, ])
     ) %>%
-      ggpairs(
-        .,
-        upper = list(continuous = wrap("points", size = 0.1, colour = in_or_out_cols)),
-        diag = list(continuous ="blankDiag"),
-        lower = list(continuous = wrap("points", size = 0.1, colour = in_or_out_cols))
-      ) %>%
+      {
+        ggpairs(
+          .,
+          upper = list(continuous = wrap("points", size = point_size, colour = in_or_out_cols)),
+          diag = list(continuous ="blankDiag"),
+          lower = list(continuous = wrap("points", size = point_size, colour = in_or_out_cols))
+        ) + 
+          theme_bw()
+      } %>%
       print(.)
 
   }

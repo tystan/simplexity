@@ -6,6 +6,11 @@
 \usage{
 mk_vt(n_comp, normalise = TRUE)
 }
+\arguments{
+\item{n_comp}{Integer value \code{D} that is the number of compositional components (columns)}
+
+\item{normalise}{do you want to normalise the columns of V^T (similarly, the rows of V) to unit vectors?}
+}
 \description{
 Create the transpose of a V matrix (i.e., V^T)
 }
@@ -27,4 +32,7 @@ mk_vt(4)
 (VT <- mk_vt(3))
 VT \%*\% t(VT) 
 t(VT) \%*\% VT  
+}
+\author{
+Ty Stanford <tystan@gmail.com>
 }

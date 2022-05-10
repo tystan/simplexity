@@ -1,5 +1,9 @@
 #' Convert \eqn{n \times D} simplex data to \eqn{n \times (D-1)} ilr-space data
 
+#' @author Ty Stanford <tystan@gmail.com>
+#' @description Convert \eqn{n \times (D-1)} ilr-space data back to \eqn{n \times D} simplex data  
+#' @param simplex_dat \code{data.frame} or \code{matrix} with of \code{n} observations (rows) and \code{D} compositional components (columns)
+#' @export
 #' @examples 
 #' grid_3simplex <- mk_simplex_grid(dim = 3, step_size = 0.1, nc = 1, rm_edges = TRUE) 
 #' head(grid_3simplex)

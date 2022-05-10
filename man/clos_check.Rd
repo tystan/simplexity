@@ -6,6 +6,13 @@
 \usage{
 clos_check(x, clo_val = 1, warn = TRUE)
 }
+\arguments{
+\item{x}{\code{data.frame} or \code{matrix} with of \code{n} observations (rows) and \code{D} compositional components (columns)}
+
+\item{clo_val}{a positive closure value to check each row sums to this}
+
+\item{warn}{(default \code{TRUE}) should a warning about pre-closure observations not being \code{clo_val} be printed?}
+}
 \description{
 Check that rows sum up to the closure value
 }
@@ -20,4 +27,7 @@ clos_check(c_dat3, clo_val = 10)
 clos_check(c_dat4, 3)
 
 
+}
+\author{
+Ty Stanford <tystan@gmail.com>
 }

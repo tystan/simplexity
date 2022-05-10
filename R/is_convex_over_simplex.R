@@ -1,4 +1,4 @@
-
+globalVariables(c("f_ax_f_by_", "f_axby_", "lhs_larger"))
 
 
 

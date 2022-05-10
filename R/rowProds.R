@@ -1,6 +1,12 @@
 
 #' row _product_ version of rowSums()
 
+#' @author Ty Stanford <tystan@gmail.com>
+#' @description row _product_ version of rowSums()
+#' @param x \code{data.frame} or \code{matrix} 
+#' @export
+#' @details 
+#' Returns a vector (of length equal to the number of rows in \code{x})of the product of the elements of each row
 #' @examples 
 #' rowProds(matrix(1:9, ncol = 3))
 #' rowProds(matrix(1:9, ncol = 1))

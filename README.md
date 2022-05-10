@@ -2,7 +2,9 @@
 
 Hopefully taking out the complexity of using the simplex.
 
-## Installation
+The `simplexity` package contains functions to generate, manipulate and plot data on the simplex
+
+## Getting started
 
 ```r
 library(devtools) # see https://www.r-project.org/nosvn/pandoc/devtools.html
@@ -11,19 +13,43 @@ library(simplexity)
 
 # now package loaded, see help file to run example
 ?mk_simplex_grid
+# or create an example 4-simplex plot
+example("plot_four_comp", package = "simplexity")
 ```
 
 ## Example usage
 
 
 ```r
-mk_simplex_grid(dim = 3, step_size = 0.5, nc = 1) # number of cores = 1 faster for small computations
-#      [,1] [,2] [,3]
-# [1,]  0.0  0.0  1.0
-# [2,]  0.0  0.5  0.5
-# [3,]  0.0  1.0  0.0
-# [4,]  0.5  0.0  0.5
-# [5,]  0.5  0.5  0.0
-# [6,]  1.0  0.0  0.0
+# create a grid of evenly spaced simplex values
+# number of cores = 1 faster for small computations
+# remove observations that are on the edge of the simplex (rm_edges = TRUE)
+grid_4simplex <- mk_simplex_grid(4, 0.2, nc = 1, rm_edges = TRUE)
+colnames(grid_4simplex) <- paste0("comp", 1:ncol(grid_4simplex))
+grid_4simplex
+#      comp1 comp2 comp3 comp4
+# [1,]   0.2   0.2   0.2   0.4
+# [2,]   0.2   0.2   0.4   0.2
+# [3,]   0.2   0.4   0.2   0.2
+# [4,]   0.4   0.2   0.2   0.2
+
+# simulate a fictitious response variable based on 4-simplex ilrs
+y <- simplex_to_ilr(grid_4simplex) %*% matrix(c(-1, 1, 0.5), ncol = 1)
+colnames(y) <- "outcome"
+#         outcome
+# [1,] -0.3279463
+# [2,]  0.1621827
+# [3,]  0.7660467
+# [4,] -0.6002831
+
+# add the response variable to the simplex data for plotting
+grid_4simplex <- as.data.frame(cbind(y, grid_4simplex))
+# this is an interactive/movable plotly 3D scatterplot
+plot_four_comp(grid_4simplex, "comp1", "comp2", "comp3", "comp4", col = "outcome")
+
+
 ```
+
+![](https://github.com/tystan/simplexity/blob/master/tetra_example.png)
+
 

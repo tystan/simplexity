@@ -4,7 +4,7 @@
 \alias{clip_to_ref_hull}
 \title{Limit `data` to points contained within the m-dim convex hull of a reference set of data}
 \usage{
-clip_to_ref_hull(data, ref_data, print_all = TRUE)
+clip_to_ref_hull(data, ref_data, print_all = TRUE, point_size = 2)
 }
 \arguments{
 \item{data}{numeric n1 x m data (n1 obs, m variables) that is coersable to matrix class}
@@ -17,6 +17,8 @@ clip_to_ref_hull(data, ref_data, print_all = TRUE)
 in \code{data} that have been removed from the returned dataset.
 \code{FALSE} only prints the remaining data points in \code{data} and the data
 points in \code{data_ref}.}
+
+\item{point_size}{point size in GGally:ggparis() plot (default \code{2} to enlarge points as output is multifaceted)}
 }
 \description{
 Limit \code{data} to points contained within the m-dim convex hull of a reference set of data
@@ -38,9 +40,8 @@ argument value) and \code{ref_data} is produced, with
 }
 }
 \examples{
-# ref_dat
-# real data to imitate
 library(dplyr)
+# real data to imitate
 data("fairclough", package = "deltacomp") # see github.com/tystan/deltacomp
 fc3 <-
   fairclough \%>\%
@@ -52,7 +53,7 @@ plot(fc3)
 plot(fc3_ref)
 # make compositions grid loosely based on summary(fc3)
 # 10 min intervals
-mygrid <- mk_simplex_grid(3, 10 / 1440, rm_edges = TRUE) * 1440 
+mygrid <- mk_simplex_grid(3, 10 / 1440, rm_edges = TRUE, nc = 1) * 1440 
 colnames(mygrid) <- c("sed", "pa", "sleep")
 mygrid <- as_tibble(mygrid)
 head(mygrid)
@@ -63,9 +64,9 @@ kp_i <-
     (sleep >= 400 & sleep <= 650) 
   ))
 mygrid <- mygrid[kp_i, ]
-mg_ilrs <- simplex_to_ilr(as.matrix(mg))
+mg_ilrs <- simplex_to_ilr(as.matrix(mygrid))
 head(mg_ilrs)
-remaining_rows <-clip_to_ref_hull(data = mg_ilrs, ref_data = fc3_ref)
+remaining_rows <- clip_to_ref_hull(data = mg_ilrs, ref_data = fc3_ref)
 }
 \author{
 Ty Stanford <tystan@gmail.com>

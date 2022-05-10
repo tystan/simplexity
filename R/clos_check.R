@@ -1,5 +1,12 @@
 #' Check that rows sum up to the closure value
 
+#' @author Ty Stanford <tystan@gmail.com>
+#' @description Check that rows sum up to the closure value
+#' @param x \code{data.frame} or \code{matrix} with of \code{n} observations (rows) and \code{D} compositional components (columns)
+#' @param clo_val a positive closure value to check each row sums to this
+#' @param warn (default \code{TRUE}) should a warning about pre-closure observations not being \code{clo_val} be printed?
+#' @export
+
 #' @examples 
 #' (c_dat1 <- matrix(c(rep(0.25, 4), 1:4 / 10, 1:4), byrow = TRUE, ncol = 4))
 #' clos_check(c_dat1)

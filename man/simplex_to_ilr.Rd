@@ -6,8 +6,11 @@
 \usage{
 simplex_to_ilr(simplex_dat)
 }
+\arguments{
+\item{simplex_dat}{\code{data.frame} or \code{matrix} with of \code{n} observations (rows) and \code{D} compositional components (columns)}
+}
 \description{
-Convert \eqn{n \times D} simplex data to \eqn{n \times (D-1)} ilr-space data
+Convert \eqn{n \times (D-1)} ilr-space data back to \eqn{n \times D} simplex data
 }
 \examples{
 grid_3simplex <- mk_simplex_grid(dim = 3, step_size = 0.1, nc = 1, rm_edges = TRUE) 
@@ -16,4 +19,7 @@ head(grid_3simplex)
 grid_2ilr <- simplex_to_ilr(grid_3simplex) 
 head(grid_2ilr)
 plot(grid_2ilr[, 1], grid_2ilr[, 2], xlab = "ilr1", ylab = "ilr2")
+}
+\author{
+Ty Stanford <tystan@gmail.com>
 }

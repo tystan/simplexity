@@ -2,6 +2,12 @@
 
 #' Convert \eqn{n \times (D-1)} ilr-space data back to \eqn{n \times D} simplex data  
 
+#' @author Ty Stanford <tystan@gmail.com>
+#' @description Convert \eqn{n \times (D-1)} ilr-space data back to \eqn{n \times D} simplex data  
+#' @param ilr_dat \code{data.frame} or \code{matrix} with of \code{n} observations (rows) and \code{D-1} ilr coordinates (columns)
+#' @param clo_val a positive value for each row to be closed to (i.e., each rows sums to this)
+#' @export
+
 #' @examples 
 #' grid_3simplex <- mk_simplex_grid(dim = 3, step_size = 0.1, nc = 1, rm_edges = TRUE) 
 #' head(grid_3simplex)
@@ -11,7 +17,7 @@
 #' plot(grid_2ilr[, 1], grid_2ilr[, 2], xlab = "ilr1", ylab = "ilr2")
 #' # return to simplex
 #' grid_back_to_simplex <- ilr_to_simplex(grid_2ilr)
-#' # same as originasl data?
+#' # same as original data?
 #' head(grid_back_to_simplex)
 #' head(grid_3simplex)
 

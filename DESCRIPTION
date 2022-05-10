@@ -1,20 +1,21 @@
 Package: simplexity
 Type: Package
-Title: Functions to generate and manipulate data on the simplex
-Version: 0.1.0
+Title: Functions to generate, manipulate and plot data on the simplex
+Version: 0.1.1
 Author: Ty Stanford
 Maintainer: Ty Stanford <tystan@gmail.com>
-Description: Functions to generate and manipulate data on the simplex.
-    Use four spaces when indenting paragraphs within the Description.
+Description: Functions to generate, manipulate and plot data on the simplex.
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.2
 Imports:
     ggplot2,
+    GGally,
+    plotly,
+    viridisLite,
     geometry,
     gMOIP,
-    GGally,
     dplyr,
     purrr,
     foreach,

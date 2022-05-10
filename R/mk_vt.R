@@ -1,5 +1,11 @@
 #' Create the transpose of a V matrix (i.e., V^T)
 #' 
+#' @author Ty Stanford <tystan@gmail.com>
+#' @description Create the transpose of a V matrix (i.e., V^T)
+#' @param n_comp Integer value \code{D} that is the number of compositional components (columns)
+#' @param normalise do you want to normalise the columns of V^T (similarly, the rows of V) to unit vectors? 
+#' @export
+#' 
 #' @details 
 #' Note that:
 #' 

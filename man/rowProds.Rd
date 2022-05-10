@@ -6,11 +6,20 @@
 \usage{
 rowProds(x)
 }
+\arguments{
+\item{x}{\code{data.frame} or \code{matrix}}
+}
 \description{
 row _product_ version of rowSums()
+}
+\details{
+Returns a vector (of length equal to the number of rows in \code{x})of the product of the elements of each row
 }
 \examples{
 rowProds(matrix(1:9, ncol = 3))
 rowProds(matrix(1:9, ncol = 1))
 rowProds(1:9)
+}
+\author{
+Ty Stanford <tystan@gmail.com>
 }
