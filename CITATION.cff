@@ -1,0 +1,32 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: simplexity
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Ty
+    family-names: Stanford
+    email: tystan@gmail.com
+    orcid: 'https://orcid.org/0000-0002-8570-5493'
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.7943409
+    description: v0.1.1
+repository-code: 'https://github.com/tystan/simplexity'
+abstract: >-
+  Hopefully taking out the complexity of using the simplex -
+  functions to generate, manipulate and plot data on the
+  simplex 
+keywords:
+  - 'compositional-data '
+  - simplex
+  - plotting
+  - R
+license: GPL-2.0
+commit: e6043c6
+version: v0.1.1
+date-released: '2023-05-17'
