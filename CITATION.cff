@@ -22,7 +22,7 @@ abstract: >-
   functions to generate, manipulate and plot data on the
   simplex 
 keywords:
-  - 'compositional-data '
+  - 'compositional-data'
   - simplex
   - plotting
   - R
