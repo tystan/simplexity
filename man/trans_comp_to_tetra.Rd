@@ -16,7 +16,7 @@ the observations in \code{comp_dat}, should a warning about pre-closure observat
 Transform 4-simplex data to a 3-D plotting coordinates
 }
 \details{
-Returns a \code{n x 4} \code{data.frame} of \code{(x, y, z)} 3-D plotting coordinates.
+Returns a \code{n x 3} \code{data.frame} of \code{(x, y, z)} 3-D plotting coordinates.
 }
 \examples{
 (grid_4simplex <- mk_simplex_grid(4, 0.2, rm_edges = TRUE, nc = 1))

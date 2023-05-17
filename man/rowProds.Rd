@@ -2,21 +2,29 @@
 % Please edit documentation in R/rowProds.R
 \name{rowProds}
 \alias{rowProds}
-\title{row _product_ version of rowSums()}
+\title{Row product function version of rowSums()}
 \usage{
-rowProds(x)
+rowProds(x, fast = FALSE)
 }
 \arguments{
 \item{x}{\code{data.frame} or \code{matrix}}
+
+\item{fast}{(\code{FALSE}, default) \code{logical} whether the "faster" version is used (see details)}
 }
 \description{
-row _product_ version of rowSums()
+Row product function version of rowSums()
 }
 \details{
-Returns a vector (of length equal to the number of rows in \code{x})of the product of the elements of each row
+Returns a vector (of length equal to the number of rows in \code{x}) of the product of the elements of each row
+
+Note that \code{fast = TRUE} is faster in most cases (e.g. number of columns \code{< 40}) and 
+will use the sum of the logged absolute values (with logic to re-include 
+signed/negative values) exponentiated back to the original scale. Testing has shown that the 
+\code{fast = FALSE} and \code{fast = TRUE} will not differ by \code{> 1e-12} in absolute difference.
 }
 \examples{
 rowProds(matrix(1:9, ncol = 3))
+rowProds(matrix(1:9, ncol = 3), fast = TRUE) # imperceptible time diff for small datasets
 rowProds(matrix(1:9, ncol = 1))
 rowProds(1:9)
 }

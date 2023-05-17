@@ -8,7 +8,7 @@
 #' the observations in \code{comp_dat}, should a warning about pre-closure observations not being 1 be printed?
 #' @export
 #' @details
-#' Returns a \code{n x 4} \code{data.frame} of \code{(x, y, z)} 3-D plotting coordinates.
+#' Returns a \code{n x 3} \code{data.frame} of \code{(x, y, z)} 3-D plotting coordinates.
 #'
 #' @examples
 #' (grid_4simplex <- mk_simplex_grid(4, 0.2, rm_edges = TRUE, nc = 1))
