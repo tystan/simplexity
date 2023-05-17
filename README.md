@@ -1,5 +1,9 @@
 # `simplexity` package
 
+
+[![DOI](https://zenodo.org/badge/310469213.svg)](https://zenodo.org/badge/latestdoi/310469213)
+
+
 Hopefully taking out the complexity of using the simplex.
 
 The `simplexity` package contains functions to generate, manipulate and plot data on the simplex
