@@ -1,57 +1,21 @@
 
 
 
+#' Create a grid on a m-dim simplex
+#'
+#' @author Ty Stanford <tystan@gmail.com>
+#' @description Create a grid on a m-dim simplex, enumerating all points spaced by \code{step_size}
+#' @param p the dimension of the simplex. This will be the number of columns in the returned data
+#' @param n integer compositions/axes to be enumerated
+#' @export
 
-cppFunction('IntegerMatrix enumerate_simplex_cpp(int p, int n, int count) {
-  // initialise output
-  IntegerMatrix simplex_mat(count, p);
-  
-  // initialise vector that updates the output rows iteratively
-  IntegerVector x(p);
-  // populate the first row with n in the first position and 0s elsewhere 
-  x[0] = n;
-  for (int j = 1; j < p; j++) {
-    x[j] = 0;
-  }
 
-  // positional indexes inside x
-  int p1 =  p - 1;
-  int p2 = p1 - 1;
-  int target = 0;
-  
-  // start populating the output matrix
-  for (int i = 0; i < count; i++) {
-    simplex_mat(i, _) = x;
-    x[target] = x[target] - 1;
-    if (target < p2) {
-      target = target + 1;
-      x[target] = x[p1] + 1;
-      x[p1] = 0;
-    } else {
-      x[p1] = x[p1] + 1;
-      while (x[target] == 0) {
-        target = target - 1;
-        if (target < 0) {
-          i = i + 1;
-          simplex_mat(i, _) = x;
-          return simplex_mat;
-        }
-      }
-    }
-  }
-  
-}')
-
-# p <- 5
-# n <- 8
-# (count_row <-  n_points(p, n))
-# table(abs(enumerate_simplex_cpp(p, n, count_row) - xsimplex_old(p, n)) > 0)
-
-n_points <- function(D, m) {
-  as.integer(round(prod((D + m - 1):(m + 1)) / factorial(D - 1)))
-}
 
 enumerate_simplex <- function(p, n, verbose = TRUE) {
+  
+  n_points <- function(D, m) {
+    as.integer(round(prod((D + m - 1):(m + 1)) / factorial(D - 1)))
+  }
   
   p <- as.integer(p)
   n <- as.integer(n)

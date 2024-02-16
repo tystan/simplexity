@@ -156,7 +156,7 @@ plot_four_comp <- function(comp_data, x1, x2, x3, x4, col = NULL, alpha = 0.9) {
     plty %>% 
     layout(
       scene = list(
-        dragmode = "orbit",
+        # dragmode = "orbit",
         xaxis = null_axis,
         yaxis = null_axis,
         zaxis = null_axis

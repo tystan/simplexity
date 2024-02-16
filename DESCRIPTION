@@ -25,4 +25,6 @@ Imports:
     Rcpp
 Suggests:
     testthat,
-    deltacomp
+    codaredistlm
+LinkingTo: 
+    Rcpp
