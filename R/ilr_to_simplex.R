@@ -29,7 +29,7 @@ ilr_to_simplex <- function(ilr_dat, clo_val = 1) {
   V <- t(mk_vt(D_1 + 1, normalise = TRUE))
   
   simplex_dat <- exp(ilr_dat %*% V)
-  simplex_dat <- row_wise_closure(simplex_dat, clo_val = clo_val)
+  simplex_dat <- closure_rowwise(simplex_dat, clo_val = clo_val)
   
   return(as.matrix(simplex_dat))
   

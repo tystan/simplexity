@@ -33,7 +33,7 @@ clos_check <- function(x, clo_val = 1, warn = TRUE) {
         sep = ""
       )
     }
-    x <- row_wise_closure(x, clo_val = clo_val)
+    x <- closure_rowwise(x, clo_val = clo_val)
   }
   return(x)
 }

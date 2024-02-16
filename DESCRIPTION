@@ -21,7 +21,8 @@ Imports:
     foreach,
     doParallel,
     parallel,
-    ParallelLogger
+    ParallelLogger,
+    Rcpp
 Suggests:
     testthat,
     deltacomp
