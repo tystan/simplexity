@@ -1,5 +1,3 @@
-
-
 #' Plot 4-simplex data in a 3-D tetrahedron
 #'
 #' @author Ty Stanford <tystan@gmail.com>

@@ -7,6 +7,7 @@
 #' @description Create a grid on a m-dim simplex, enumerating all points spaced by \code{step_size}
 #' @param p the dimension of the simplex. This will be the number of columns in the returned data
 #' @param n integer compositions/axes to be enumerated
+#' @param verbose (TRUE, default) print output matrix dimensions and object size in MB to console
 #' @export
 
 

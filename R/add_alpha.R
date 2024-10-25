@@ -2,6 +2,20 @@
 #' Add transparency to supplied vector of colours
 #'
 #' @author Ty Stanford <tystan@gmail.com>
+#' @importFrom geometry convhulln
+#' @importFrom gMOIP inHull
+#' @importFrom GGally ggpairs wrap
+#' @importFrom foreach foreach `%do%` `%dopar%`
+#' @importFrom purrr map pmap_dbl
+#' @importFrom grDevices col2rgb rgb
+#' @importFrom stats runif
+#' @importFrom utils object.size
+#' @importFrom ggplot2 theme_bw
+#' @import plotly
+#' @import viridisLite
+#' @import dplyr
+#' @importFrom parallel makeCluster stopCluster detectCores 
+#' @importFrom doParallel registerDoParallel	
 #' @description Add transparency to supplied vector of colours
 #' @param col vector of colours
 #' @param alpha a value in (0, 1]. Default is 1 which does not change the transparency. 0 would be an invisible colour.

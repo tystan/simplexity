@@ -10,9 +10,22 @@ The `simplexity` package contains functions to generate, manipulate and plot dat
 
 ## Getting started
 
+### Installation
+
+(platform independent) If you have `devtools` installed you can use:
 ```r
 library(devtools) # see https://www.r-project.org/nosvn/pandoc/devtools.html
 devtools::install_github('tystan/simplexity') # see DESCRIPTION file for required and suggested packages
+```
+
+If you don't have `devtools` installed but are using Windows, you can download and install the below zip file:
+
+[simplexity_0.2.0.zip](https://github.com/tystan/simplexity/blob/master/simplexity_0.2.0.zip)
+
+
+### Loading and using `simplexity`
+
+```r
 library(simplexity)
 
 # now package loaded, see help file to run example
@@ -21,7 +34,7 @@ library(simplexity)
 example("plot_four_comp", package = "simplexity")
 ```
 
-## Example usage
+### Example usage
 
 
 ```r

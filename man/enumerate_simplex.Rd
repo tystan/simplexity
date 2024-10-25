@@ -10,6 +10,8 @@ enumerate_simplex(p, n, verbose = TRUE)
 \item{p}{the dimension of the simplex. This will be the number of columns in the returned data}
 
 \item{n}{integer compositions/axes to be enumerated}
+
+\item{verbose}{(TRUE, default) print output matrix dimensions and object size in MB to console}
 }
 \description{
 Create a grid on a m-dim simplex, enumerating all points spaced by \code{step_size}

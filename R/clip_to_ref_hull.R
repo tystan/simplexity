@@ -33,7 +33,7 @@ globalVariables(c("i", "."))
 #' @examples
 #' library(dplyr)
 #' # real data to imitate
-#' data("fairclough", package = "deltacomp") # see github.com/tystan/deltacomp
+#' data("fairclough", package = "codaredistlm") # see github.com/tystan/codaredistlm
 #' fc3 <-
 #'   fairclough %>%
 #'   mutate(pa = lpa + mpa + vpa) %>%
