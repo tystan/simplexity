@@ -1,8 +1,8 @@
 Package: simplexity
 Type: Package
 Title: Functions to generate, manipulate and plot data on the simplex
-Version: 0.2.0
-Date: 2024-10-25
+Version: 0.2.1
+Date: 2024-10-29
 Authors@R: c(
     person("Ty", "Stanford", email = "tystan@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-8570-5493")))
 Description: Hopefully taking out the complexity of using the simplex: 
@@ -17,6 +17,7 @@ Imports:
     plotly,
     viridisLite,
     geometry,
+    expm,
     gMOIP,
     dplyr,
     purrr,
