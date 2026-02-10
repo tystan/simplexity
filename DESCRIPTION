@@ -1,8 +1,8 @@
 Package: simplexity
 Type: Package
 Title: Functions to generate, manipulate and plot data on the simplex
-Version: 0.2.1
-Date: 2024-10-29
+Version: 0.2.2
+Date: 2026-02-10
 Authors@R: c(
     person("Ty", "Stanford", email = "tystan@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-8570-5493")))
 Description: Hopefully taking out the complexity of using the simplex: 
@@ -10,7 +10,7 @@ Description: Hopefully taking out the complexity of using the simplex:
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 Imports:
     GGally,
     ggplot2,

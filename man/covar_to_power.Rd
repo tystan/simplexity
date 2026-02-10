@@ -14,10 +14,6 @@ covar_to_power(covar_mat, pow = 1L, verbose = FALSE)
 \item{verbose}{provide working (FALSE, default)}
 }
 \value{
-Note this is not working yet because eigen() can't guarentee the correct 
-signs to recover the original matrix for non-even powers
-best to use the expm::power() or Matrix::chol() function
-
 Used the eigen decomposition that
 
 \code{covar_mat} \eqn{= U \Lambda U^T}{= U \Lambda U^T}
@@ -29,6 +25,10 @@ when
 Therefore
 
 \code{covar_mat ** pow} \eqn{= U \Lambda^{pow} U^T}{= U \Lambda^{pow} U^T}
+
+Note 1: should also satisfy \code{(covar_mat ** pow) ** 1/pow = covar_mat}
+Note 2: an implementation using  expm::power() or Matrix::chol() would 
+probably be quicker/better
 }
 \description{
 Calculate the real valued power of the variance-covariance matrix
@@ -37,18 +37,22 @@ Calculate the real valued power of the variance-covariance matrix
 A <- diag(2)
 covar_to_power(A, pow = 2, verbose = TRUE)
 covar_to_power(A, pow = -1/2, verbose = TRUE)
+covar_inverse_sqrt(A, verbose = TRUE)
 
 B <- diag(c(1, 4))
 covar_to_power(B, pow = 2, verbose = TRUE)
 covar_to_power(B, pow = 1/2, verbose = TRUE)
 covar_to_power(B, pow = -1/2, verbose = TRUE)
+covar_inverse_sqrt(B, verbose = TRUE)
 
 C <- matrix(c(4, -2, -2, 4), nrow = 2)
 covar_to_power(C, pow = 2, verbose = TRUE)
 covar_to_power(C, pow = 1/2, verbose = TRUE)
 covar_to_power(C, pow = -1/2, verbose = TRUE)
-covar_to_power(C, pow = 2) * covar_to_power(C, pow = -1)
-covar_to_power(C, pow = 1/2) * covar_to_power(C, pow = 1 / 2)
-covar_to_power(C, pow = -1/2) * covar_to_power(C, pow = 3 / 2)
+covar_inverse_sqrt(C, verbose = TRUE)
+covar_to_power(covar_to_power(C, pow = -1/2), pow = -2)
+covar_to_power(covar_to_power(C, pow = 2), pow = 1/2)
+covar_to_power(covar_to_power(C, pow = -1/3), pow = -3)
+covar_to_power(covar_to_power(C, pow = +1/3), pow = +3)
 
 }
