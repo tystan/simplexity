@@ -27,6 +27,9 @@ Imports:
     Rcpp
 Suggests:
     testthat,
-    codaredistlm
+    codaredistlm,
+    knitr,
+    rmarkdown
 LinkingTo: 
     Rcpp
+VignetteBuilder: knitr

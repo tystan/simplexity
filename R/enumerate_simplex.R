@@ -9,6 +9,22 @@
 #' @param n integer compositions/axes to be enumerated
 #' @param verbose (TRUE, default) print output matrix dimensions and object size in MB to console
 #' @export
+#' @examples
+#' # If we want D=4 compositional parts that enumerate the day into 20% chunks (5 non zero values)
+#' # We can do the following
+#' D <- 4; n_chunks <- 5
+#' head(enumerate_simplex(D, n = n_chunks))
+#' # OR if the closure value is 1 then use
+#' head(enumerate_simplex(D, n = n_chunks) / n_chunks)
+#' 
+#' # if you want the lattice without edge values (i.e., no zeros)
+#' # you can enumerate D less chunks then add one chunk to every enumerated value
+#' enumerate_simplex(D, n = n_chunks - D) + 1
+#' # long way if you want to check
+#' print(c(class(latt_no_0), class(latt_no_0[1, ]))) # matrix of integers
+#' latt_with_0 <- enumerate_simplex(D, n = n_chunks)
+#' latt_0_rows <- apply(latt_with_0 == 0L, 1, any) # by row, if any 0, then 0 in row
+#' latt_with_0[!latt_0_rows, ]  # remove rows with 0s, looks the same with more steps!
 
 
 

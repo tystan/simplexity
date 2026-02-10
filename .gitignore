@@ -6,3 +6,10 @@
 *.Rproj
 
 .Rproj.user
+
+*simplexity_[0-9]\.[^2]\.[^2]\.zip
+*simplexity_[0-9]\.[^2]\.[^2]\.tar\.gz
+
+
+
+inst/doc

@@ -1,0 +1,270 @@
+---
+title: "Ellipsoid fencing"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ellipsoid-fencing}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+## Purpose
+
+If you are already looking at the `simplexity` package, chances are that you are interested in compositional data analysis (CoDA).
+
+Sometimes in CoDA, we want to make a grid (that I will also refer to as a lattice) of compositional points that are:
+
+1. evenly spaced in the compositional space (e.g., 10 minute spacings of $D$ comppositional parts representing $D$ different time-use behaviours)
+2. representative of some sample compositional data (e.g., only has values in the neighbourhood of the observed points and does not extend beyond the coverage of the sample data)
+
+
+## Example: the `Fariclough` dataset
+
+
+Firstly, let's load the `simplexity` package and its sister package that contains the dataset we wish to use: `codaredistlm`.
+
+```{r setup}
+library(simplexity)
+library(codaredistlm)
+```
+
+
+### Characterising the data
+
+
+In this vignette we are perusing a lattice that is representative of the `fairclough` sample data. For simplicity, let's aim for a grid with 10-minute spacings but any size of spacings can be made with minor changes to the code presented.
+
+
+```{r load}
+suppressPackageStartupMessages({library(dplyr)}) # for piping and tibbles etc
+data(fairclough) # load data into session from codaredistlm package
+```
+
+To see the info about the dataset in the help file type `?fairclough` in the R console.
+
+```{r help, eval = FALSE}
+?fairclough
+```
+
+Let's use the compositional data and create $D=3$ compositional parts: 
+
+* sedentary time (`sed`), 
+* physical activity time (`lmvpa` consisting of the more detailed light, moderate and vigorous varieties) and 
+* sleep time (`sleep`).
+
+```{r mold}
+# get just the compositions we are interested in
+fc_comp <- 
+  fairclough %>%
+  mutate(lmvpa = lpa + mpa + vpa) %>%
+  select(sed, lmvpa, sleep) %>%
+  as_tibble()
+
+# have a peek
+head(fc_comp)
+
+# check what rows sum to
+table(rowSums(fc_comp)) # all approx 1440 minutes of the day
+
+# could do this to make exactly equal to 1440 (but overkill)
+# rsms <- rowSums(fc_comp)
+# fc_comp <- 1440 * apply(fc_comp, 2, function(x) x / rsms) 
+```
+
+If we look at the summary of the data, what do the naive additive means and SDs have to say?
+
+```{r charise1}
+summary(fc_comp)
+```
+
+
+Thinking towards the grid we want to generate, the summary tells us we roughly need:
+
+* sedentary behaviour (`sed`) to be between 300 and 690 minutes
+* physical activity (`lmvpa`) to be between 220 and 580 minutes
+* sedentary behaviour (`sleep`) to be between 400 and 620 minutes
+* importantly with the additional constraint that `sed + lmvpa + sleep` = 1440 minutes
+
+
+### A false start in creating a grid?
+
+
+So a niave way to make a 10-minute spaced grid under these constants could be create the
+
+((690 - 300) / 10 + 1)  $\times$ ((580 - 220) / 10 + 1) $\times$ ((620 - 400) / 10 + 1) 
+
+= `r length(seq(300, 690, 10))` $\times$ `r length(seq(220, 580, 10))` $\times$ `r length(seq(400, 620, 10))`  
+
+= `r length(seq(300, 690, 10)) * length(seq(220, 580, 10)) * length(seq(400, 620, 10))` combinations of the time-use values above and **then** just keep the rows that add up to 1440 minutes.
+
+e.g.,
+```{r niave}
+grid_combos <-
+  expand.grid(
+    sed   = seq(300, 690, 10), 
+    lmvpa = seq(220, 580, 10), 
+    sleep = seq(400, 620, 10)
+  )
+nrow(grid_combos)
+# safe way to get rows adding up to 1440 within rounding tolerance
+correct_sums <- abs(rowSums(grid_combos) - 1440) < 1e-6
+sum(correct_sums) # the number of rows that should remain
+grid_combos <- grid_combos[correct_sums, ] # just keep 1440 min rows
+nrow(grid_combos)
+tail(grid_combos) # look at last 6 rows
+```
+
+
+We can see how both the original data and the niave grid looks by using the excellent `compositions` package:
+
+```{r plot_niave, fig.width=8, fig.height=4}
+suppressPackageStartupMessages({library(compositions)})
+old_mfrow <- if (is.null(par("mfrow"))) c(1, 1) else par("mfrow")
+par(mfrow = c(1, 2))
+plot(acomp(fc_comp), col = add_alpha("dodgerblue", 0.3), pch = 16, pca = TRUE)
+legend(
+  x = 0.6, y = 0.85, 
+  legend = c("Fairclough\ndata", "Niave grid\nin S^3"), 
+  pch = 16, 
+  col = c("dodgerblue", "orange"),
+  cex = 0.7
+  # bty = "n"
+)
+plot(acomp(grid_combos), col = add_alpha("orange", 0.3), pch = 16, pca = TRUE)
+par(mfrow = old_mfrow) # return device to as was before
+```
+
+
+So we can see there are a few issues:
+
+1. In greater number of dimensions generating a grid of the compositional parts and then only keeping the rows that satisfy the summation constraint will quickly produce `data.frame`s too large for memory and/or take to long to either generate and then remove rows because of the excessive calculations performed remembering that the summation constraint being true (i.e., keeping that row) will happen vanishingly less often as the number of compositional parts increases (proof left to the reader, lols).
+2. The grid extrapolates the sample data - going from min to max values in each compositional part is problematic. To illustrate by example, compositional values that are the minimum for `sleep` (400 minutes, on the edge of the grid) are more likely to have "middling" values for the remaining compositional parts (`sed`, `lmvpa`) of (570, 470) minutes (for example) than (690, 350) minutes where `sed`=690 is on the edge of the grid as well as `sleep` and `lmvpa` in close-ish to the minimum value. This can be seen as the vertices of the grid on the simplex above that are technically possible but not seen in the sample (the example given is specifically the top right vertex of the irregular hexagon seen in the plot on the right which clearly extrapolates for the sample data seen in the plot on the left).
+3. From point (2) above we can also deduce by default there is an inbuilt negative correlation between compositions (you can have intuition about that because if `sleep` (for example) is larger, there is less of the 1440 minutes of the day remaining for `lmvpa` or `sed`). However, the sample data may also have other correlation structures for particular populations. For example, in a particular population, those who have a lot of physical activity also need to have a lot of sedentary time. This positive correlation may or may not exceed the mathematically certain negative correlation inbuilt by default, but it does need to be used to inform the grid of what compositional values are both likely and possible.
+
+
+## An alternative lattice creation
+
+Thanks to smart people that have come before us there are methods to create grids within in the simplex. Evenly spaced points in the simplex can be thought of in two other equivalent ways:
+
+1. All the distinct combinations which partitioning $n$ indistinguishable objects into $D$ distinct groups [where $D$ is the number of compositional parts and the $n$ indistinguishable objects are the 1440 minutes of the day for example]
+2. The *support* of the multinomial distribution with $D$ categories and counts in each category that sum to $n$, i.e., $n_1 + n_2 + ... + n_D = n$ with $n_d \geq 0$  and $n_d$ is the count in category $d$ for $d = 1, 2, ...,D$.
+
+The first "re-imagining" of the simplex provides both an algorithm to enumerate each point of a lattice spanning the simplex *and* a formula to determine the number of points in advance.
+
+Let's start with the formula:
+
+$$
+N = 
+\binom{D + n -1}{n} =
+\frac{(D + n -1)!}{(D -1 )! \; n!}.
+$$
+
+
+N is the number of points in a simplex lattice where there are $D$ compositional parts and $n$ "chunks" of time (the count of spacings within any compositional part).
+
+So for example, if you were after 5-minute spaced lattice, you can work out there are $n=288$ 5 minute slices of time in 1440-minutes (i.e., 1440 / 5 = 288). If you have $D=3$ compositional parts then the number of points in the corresponding lattice is
+
+$$
+N = 
+\binom{3 + 288 -1}{288} =
+\frac{290!}{2! \; 288!} = 
+290 {\times} 289 / 2 =
+41,905.
+$$
+
+For fun, here is a table of the number of lattice points in 5-minute spaced grids for different numbers of compositional parts (dimension of simplex).
+
+|   n|  D|N                      |
+|---:|--:|:----------------------|
+| 288|  2|289                    |
+| 288|  3|41,905                 |
+| 288|  4|4,064,785              |
+| 288|  5|296,729,305            |
+| 288|  6|17,388,337,273         |
+| 288|  7|852,028,526,377        |
+| 288|  8|35,906,916,468,745     |
+| 288|  9|1,328,555,909,343,565  |
+| 288| 10|43,842,345,008,337,645 |
+
+You don't need to know the above maths, I just think it's fun. The next part is the useful part that was earmarked above: actually enumerating the simplex for given $D$ and $n$.
+
+This is done easily (and quickly!) using the function `simplexity::enumerate_simplex(D, n)`.
+
+So to return to the original idea of a 10-minute spaced grid for the compositional parts `(sed, lmvpa, sleep)` we can run the code:
+
+
+```{r latt1}
+# note that the "L" after the number tells R to make it integer type (not numeric)
+D <- 3L; spacing <- 10L; n_chunks <- 1440L / spacing;
+S3_10m_lattice <- spacing * enumerate_simplex(D, n = n_chunks)
+head(S3_10m_lattice)
+
+# OR if the closure value is 1 then use
+# S3_10m_lattice <- enumerate_simplex(D, n = n_chunks) / n_chunks
+```
+
+One last consideration is that often we don't want the points on the lattice that are on the edges, i.e., zero values. Instead of filtering the rows in our lattice to only have those rows without zeros, we can use a little trick of creating the lattice where we enumerate D less chunks of time (for the $n$ argument) then add one chunk to every enumerated value:
+
+
+```{r latt2}
+D <- 3L; spacing <- 10L; n_chunks <- 1440L / spacing;
+S3_10m_lattice <- spacing * (enumerate_simplex(D, n = n_chunks - D) + 1L)
+head(S3_10m_lattice)
+nrow(S3_10m_lattice)
+
+# long way if you want to check
+latt_with_0 <- spacing * enumerate_simplex(D, n = n_chunks)
+print(c(class(latt_with_0), class(latt_with_0[1, ]))) # matrix of integers
+latt_0_rows <- apply(latt_with_0 == 0L, 1, any) # by row, if any 0, then 0 in row
+head(latt_with_0[!latt_0_rows, ])  # remove rows with 0s, looks the same with more steps!
+sum(!latt_0_rows) # same as nrow(S3_10m_lattice)?
+```
+
+
+
+## Restricting the lattice to the sample space
+
+
+To avoid extrapolation outside of the space covered by the sampled compositional data we have proposed the use of distributional quantiles of the sampled data to constrain lattice.
+
+For those that have worked on CoDA before, they will know that compositional data has operations like the closures operation and compositional perturbation that allows us to perform arithmetic on compositional values to ensure they remain compositional values and we have analogous operations to what we are used to with the algebra we know from primary/high school. However, it is often much easier to transform compositional data to the "real-space" (simply meaning multidimensional data that can take any real values [as opposed to non-negative and sum constrained values in the simplex]) and perform our usual arithmetic/maths/statistics. That's what we'll do here using the isometric log ratio (ilr) transformation. If you are unfamiliar with this transformation, there are some great resources available to get yourself up to speed here and here.
+
+[Include some joining text here]
+
+For sample vector (ilr) data, $\boldsymbol{z}_i$ ($i=1,2,..., n$), where each $\boldsymbol{z}_i$ represents the ilr coordinates corresponding to the time-use compositions of sample $i$.
+
+$$
+\sqrt{ \left( \boldsymbol{z} - \boldsymbol{\mu}_z \right)^T \Sigma_z^{-1} \left( \boldsymbol{z} - \boldsymbol{\mu}_z  \right) }
+$$
+
+corresponds to the Mahalanobis distance of a point $\boldsymbol{z}$ in Euclidean space from \textit{any} distribution (Gaussian or otherwise) with a mean vector and variance-covariance matrix, $\boldsymbol{\mu}_z$ and $\Sigma_z$, respectively. The Mahalanobis distance has a multivariate geometric interpretation no matter the underlying distribution where the mean vector and variance-covariance matrix exist: the Mahalanobis distance is the number of standard deviations a point is away from the centre of the distribution. In the special case of a single dimension, the Mahalanobis distance is the absolute value of the often used univariate standardisation of values by subtraction of the mean and division by the standard deviation. In cases where the number of dimensions is greater than one, the Mahalanobis distance accounts for the variance (standard deviations) and covariance (correlations) in each dimension - adjusting the distance measure by the relative standard deviations in the direction of each dimension and associated correlations. 
+ 
+
+
+If the compositional data under ilr transform is multivariate Gaussian the compositional data itself is said to be from a multivariate *Gaussian distribution on the simplex*. Note that the converse is true no matter the specific ilr basis chosen for the ilr transform. In these cases the squared Mahalanobis distance being less than a distributional quantile value, specifically from $100{\times}p$th percentile the $\chi^2_{D-1}$ distribution, says that an observation is within the $p$th percentile of the multivariate Gaussian on the simplex. i.e, values satisfying
+
+$$
+\left( \boldsymbol{z} - \boldsymbol{\mu}_z \right)^T \Sigma_z^{-1} \left( \boldsymbol{z} - \boldsymbol{\mu}_z  \right)
+\leq \chi^2_{D-1}(p) 
+$$
+where $\boldsymbol{\mu}_z$ and $\Sigma_z$ are estimated using $\hat{\boldsymbol{\mu}}_z$ and $\hat{\Sigma}_z$, respectively, from the sample ilr values and $\chi^2_{D-1}(p)$ is the $100 {\times} p^{th}$ quantile of the Chi-squared distribution with $D-1$ degrees of freedom.
+
+ 
+
+
+
+
+
+
+
+
+
+
+
