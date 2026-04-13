@@ -29,7 +29,7 @@
 #' 
 #' # sample data
 #' set.seed(1234)
-#' samp_dat <- mvtnorm::rmvnorm(30, mean = m_, sigma = v_)
+#' samp_dat <- rmvnorm(30, mean = m_, sigma = v_)
 #' # returns list(osg_dat, m_grp, v_grp, cis)
 #' (osg_lst <- orthog_scale_grp(samp_dat))
 #' #' # inverse procedure

@@ -24,6 +24,11 @@ If you don't have `devtools` installed but are using Windows, you can download a
 [simplexity_0.2.2.zip](https://github.com/tystan/simplexity/blob/master/simplexity_0.2.2.zip)
 (C++ code is pre-compiled, no compiler required)
 
+If you are using macOS (Intel x64), you can download and install the below tgz file:
+
+[simplexity_0.2.3.tgz](https://github.com/tystan/simplexity/blob/master/simplexity_0.2.3.tgz)
+(C++ code is pre-compiled, no compiler required)
+
 ### Loading and using `simplexity`
 
 ```r
